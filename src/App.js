@@ -1,5 +1,5 @@
-import BasicEditor from './components/BasicEditor';
-
+import BasicEditor from "./components/BasicEditor";
+import "./App.css"
 function App() {
   return (
     <div>
