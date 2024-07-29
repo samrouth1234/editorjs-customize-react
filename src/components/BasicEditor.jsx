@@ -8,6 +8,17 @@ import Image from "../Elements/Embed/Image";
 import Video from "../Elements/Embed/Video";
 import Equation from "../Elements/Equation/Equation";
 
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  Table,
+  TableRow,
+  TableCell,
+} from "docx";
+import { saveAs } from "file-saver";
+
 const editor = withReact(createEditor());
 
 const Element = ({ attributes, children, element }) => {
@@ -127,6 +138,125 @@ const BasicEditor = () => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 
+  const handleExport = async () => {
+    const children = value.map((node) => {
+      switch (node.type) {
+        case "paragraph":
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  subscript: leaf.subscript,
+                  superscript: leaf.superscript,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                })
+            ),
+          });
+
+        case "orderedList":
+          return node.children.map(
+            (item, index) =>
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `${index + 1}. `,
+                  }),
+                  ...item.children.map(
+                    (leaf) =>
+                      new TextRun({
+                        text: leaf.text,
+                        bold: leaf.bold,
+                        italics: leaf.italic,
+                        underline: leaf.underline,
+                        strike: leaf.strikethrough,
+                        subscript: leaf.subscript,
+                        superscript: leaf.superscript,
+                        color: leaf.color,
+                        shading: leaf.bgColor
+                          ? {
+                              type: "clear",
+                              fill: leaf.bgColor.replace("#", ""),
+                            }
+                          : undefined,
+                        size: sizeMap[leaf.fontSize],
+                        font: fontFamilyMap[leaf.fontFamily],
+                      })
+                  ),
+                ],
+              })
+          );
+
+        case "unorderedList":
+          return node.children.map(
+            (item) =>
+              new Paragraph({
+                bullet: {
+                  level: 0,
+                },
+                children: item.children.map(
+                  (leaf) =>
+                    new TextRun({
+                      text: leaf.text,
+                      bold: leaf.bold,
+                      italics: leaf.italic,
+                      underline: leaf.underline,
+                      strike: leaf.strikethrough,
+                      subscript: leaf.subscript,
+                      superscript: leaf.superscript,
+                      color: leaf.color,
+                      shading: leaf.bgColor
+                        ? {
+                            type: "clear",
+                            fill: leaf.bgColor.replace("#", ""),
+                          }
+                        : undefined,
+                      size: sizeMap[leaf.fontSize],
+                      font: fontFamilyMap[leaf.fontFamily],
+                    })
+                ),
+              })
+          );
+
+        default:
+          return new Paragraph(
+            node.children.map((leaf) => new TextRun(leaf.text))
+          );
+      }
+    });
+
+    // Flatten the children array to handle nested arrays from lists
+    const flattenedChildren = children.flat();
+
+    const doc = new Document({
+      sections: [
+        {
+          children: flattenedChildren,
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(
+      new Blob([blob], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      }),
+      "document.docx"
+    );
+  };
+
   return (
     <Slate
       editor={editor}
@@ -142,6 +272,9 @@ const BasicEditor = () => {
             placeholder="Enter paragraph "
           />
         </div>
+        <button className="t" onClick={handleExport}>
+          Export to .docx
+        </button>
       </div>
     </Slate>
   );
