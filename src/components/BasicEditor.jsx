@@ -16,6 +16,8 @@ import {
   Table,
   TableRow,
   TableCell,
+  HeadingLevel,
+  AlignmentType,
 } from "docx";
 import { saveAs } from "file-saver";
 
@@ -33,19 +35,19 @@ const Element = ({ attributes, children, element }) => {
       return <blockquote {...attributes}>{children}</blockquote>;
     case "alignLeft":
       return (
-        <div style={{ textAlign: "left" }} {...attributes}>
+        <div style={{ textAlign: "START" }} {...attributes}>
           {children}
         </div>
       );
     case "alignCenter":
       return (
-        <div style={{ textAlign: "center" }} {...attributes}>
+        <div style={{ textAlign: "CENTER" }} {...attributes}>
           {children}
         </div>
       );
     case "alignRight":
       return (
-        <div style={{ textAlign: "right" }} {...attributes}>
+        <div style={{ textAlign: "END" }} {...attributes}>
           {children}
         </div>
       );
@@ -141,7 +143,7 @@ const BasicEditor = () => {
   const handleExport = async () => {
     const children = value.map((node) => {
       switch (node.type) {
-        case "paragraph":
+        case "headingOne":
           return new Paragraph({
             children: node.children.map(
               (leaf) =>
@@ -151,8 +153,6 @@ const BasicEditor = () => {
                   italics: leaf.italic,
                   underline: leaf.underline,
                   strike: leaf.strikethrough,
-                  subscript: leaf.subscript,
-                  superscript: leaf.superscript,
                   color: leaf.color,
                   shading: leaf.bgColor
                     ? {
@@ -162,8 +162,170 @@ const BasicEditor = () => {
                     : undefined,
                   size: sizeMap[leaf.fontSize],
                   font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
                 })
             ),
+            heading: HeadingLevel.HEADING_1,
+          });
+
+        case "headingTwo":
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
+                })
+            ),
+            heading: HeadingLevel.HEADING_2,
+          });
+
+        case "headingThree":
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
+                })
+            ),
+            heading: HeadingLevel.HEADING_3,
+          });
+
+        case "blockquote":
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
+                })
+            ),
+            alignment: AlignmentType.LEFT,
+            indent: {
+              left: 720,
+            },
+          });
+
+        case "alignLeft":
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
+                })
+            ),
+            alignment: AlignmentType.START,
+          });
+
+        case "alignCenter":
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
+                })
+            ),
+            alignment: AlignmentType.CENTER,
+          });
+
+        case "alignRight":
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
+                })
+            ),
+            alignment: AlignmentType.END,
           });
 
         case "orderedList":
@@ -173,6 +335,7 @@ const BasicEditor = () => {
                 children: [
                   new TextRun({
                     text: `${index + 1}. `,
+                    bold: true,
                   }),
                   ...item.children.map(
                     (leaf) =>
@@ -182,8 +345,6 @@ const BasicEditor = () => {
                         italics: leaf.italic,
                         underline: leaf.underline,
                         strike: leaf.strikethrough,
-                        subscript: leaf.subscript,
-                        superscript: leaf.superscript,
                         color: leaf.color,
                         shading: leaf.bgColor
                           ? {
@@ -193,6 +354,8 @@ const BasicEditor = () => {
                           : undefined,
                         size: sizeMap[leaf.fontSize],
                         font: fontFamilyMap[leaf.fontFamily],
+                        subScript: leaf.subscript,
+                        superScript: leaf.superscript,
                       })
                   ),
                 ],
@@ -214,8 +377,6 @@ const BasicEditor = () => {
                       italics: leaf.italic,
                       underline: leaf.underline,
                       strike: leaf.strikethrough,
-                      subscript: leaf.subscript,
-                      superscript: leaf.superscript,
                       color: leaf.color,
                       shading: leaf.bgColor
                         ? {
@@ -225,15 +386,37 @@ const BasicEditor = () => {
                         : undefined,
                       size: sizeMap[leaf.fontSize],
                       font: fontFamilyMap[leaf.fontFamily],
+                      subScript: leaf.subscript,
+                      superScript: leaf.superscript,
                     })
                 ),
               })
           );
 
         default:
-          return new Paragraph(
-            node.children.map((leaf) => new TextRun(leaf.text))
-          );
+          return new Paragraph({
+            children: node.children.map(
+              (leaf) =>
+                new TextRun({
+                  text: leaf.text,
+                  bold: leaf.bold,
+                  italics: leaf.italic,
+                  underline: leaf.underline,
+                  strike: leaf.strikethrough,
+                  color: leaf.color,
+                  shading: leaf.bgColor
+                    ? {
+                        type: "clear",
+                        fill: leaf.bgColor.replace("#", ""),
+                      }
+                    : undefined,
+                  size: sizeMap[leaf.fontSize],
+                  font: fontFamilyMap[leaf.fontFamily],
+                  subScript: leaf.subscript,
+                  superScript: leaf.superscript,
+                })
+            ),
+          });
       }
     });
 
