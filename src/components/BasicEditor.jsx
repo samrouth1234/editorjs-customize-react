@@ -289,6 +289,7 @@ const BasicEditor = () => {
       } }
     >
       <div className="App">
+        <h1>Basic Editor</h1>
         <Toolbar />
         <div className="Editor">
           <Editable
