@@ -1,7 +1,12 @@
 git add .
-echo "Please Enter your commit message: "
-read commit
+echo "========================================"
+read -p "Please enter commit : " commit
+echo "========================================"
 git commit -m "$commit"
-echo "Please Enter your branch name: "
-read branch
+echo "========================================"
+read -p "Please Enter your branch name: " branch
+echo "========================================"
 git push origin $branch
+
+echo "==========😍😍😍😍😍😍😍============="
+echo "Git push to $branch completed successfully!😒"
