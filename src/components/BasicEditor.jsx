@@ -142,190 +142,89 @@ const BasicEditor = () => {
 
   const handleExport = async () => {
     const children = value.map((node) => {
+      const createTextRun = (leaf) => {
+        return new TextRun({
+          text: leaf.text,
+          bold: leaf.bold,
+          italics: leaf.italic,
+          underline: leaf.underline,
+          strike: leaf.strikethrough,
+          color: leaf.color,
+          shading: leaf.bgColor
+            ? {
+                type: "clear",
+                fill: leaf.bgColor.replace("#", ""),
+              }
+            : undefined,
+          size: sizeMap[leaf.fontSize],
+          font: fontFamilyMap[leaf.fontFamily],
+          subScript: leaf.subscript,
+          superScript: leaf.superscript,
+        });
+      };
+
       switch (node.type) {
         case "headingOne":
           return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
-                })
-            ),
+            children: node.children.map(createTextRun),
             heading: HeadingLevel.HEADING_1,
           });
 
         case "headingTwo":
           return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
-                })
-            ),
+            children: node.children.map(createTextRun),
             heading: HeadingLevel.HEADING_2,
           });
 
         case "headingThree":
           return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
-                })
-            ),
+            children: node.children.map(createTextRun),
             heading: HeadingLevel.HEADING_3,
           });
 
         case "blockquote":
           return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
-                })
-            ),
+            children: node.children.map(createTextRun),
             alignment: AlignmentType.LEFT,
             indent: {
               left: 720,
             },
           });
 
-        case "alignLeft":
-          return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
+        case "table":
+          return new Table({
+            rows: node.children.map(
+              (row) =>
+                new TableRow({
+                  children: row.children.map(
+                    (cell) =>
+                      new TableCell({
+                        children: cell.children.map(
+                          (paragraph) =>
+                            new Paragraph(paragraph.children.map(createTextRun))
+                        ),
+                      })
+                  ),
                 })
             ),
-            alignment: AlignmentType.START,
+          });
+
+        case "alignLeft":
+          return new Paragraph({
+            children: node.children.map(createTextRun),
+            alignment: AlignmentType.LEFT,
           });
 
         case "alignCenter":
           return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
-                })
-            ),
+            children: node.children.map(createTextRun),
             alignment: AlignmentType.CENTER,
           });
 
         case "alignRight":
           return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
-                })
-            ),
-            alignment: AlignmentType.END,
+            children: node.children.map(createTextRun),
+            alignment: AlignmentType.RIGHT,
           });
 
         case "orderedList":
@@ -337,27 +236,7 @@ const BasicEditor = () => {
                     text: `${index + 1}. `,
                     bold: true,
                   }),
-                  ...item.children.map(
-                    (leaf) =>
-                      new TextRun({
-                        text: leaf.text,
-                        bold: leaf.bold,
-                        italics: leaf.italic,
-                        underline: leaf.underline,
-                        strike: leaf.strikethrough,
-                        color: leaf.color,
-                        shading: leaf.bgColor
-                          ? {
-                              type: "clear",
-                              fill: leaf.bgColor.replace("#", ""),
-                            }
-                          : undefined,
-                        size: sizeMap[leaf.fontSize],
-                        font: fontFamilyMap[leaf.fontFamily],
-                        subScript: leaf.subscript,
-                        superScript: leaf.superscript,
-                      })
-                  ),
+                  ...item.children.map(createTextRun),
                 ],
               })
           );
@@ -369,53 +248,13 @@ const BasicEditor = () => {
                 bullet: {
                   level: 0,
                 },
-                children: item.children.map(
-                  (leaf) =>
-                    new TextRun({
-                      text: leaf.text,
-                      bold: leaf.bold,
-                      italics: leaf.italic,
-                      underline: leaf.underline,
-                      strike: leaf.strikethrough,
-                      color: leaf.color,
-                      shading: leaf.bgColor
-                        ? {
-                            type: "clear",
-                            fill: leaf.bgColor.replace("#", ""),
-                          }
-                        : undefined,
-                      size: sizeMap[leaf.fontSize],
-                      font: fontFamilyMap[leaf.fontFamily],
-                      subScript: leaf.subscript,
-                      superScript: leaf.superscript,
-                    })
-                ),
+                children: item.children.map(createTextRun),
               })
           );
 
         default:
           return new Paragraph({
-            children: node.children.map(
-              (leaf) =>
-                new TextRun({
-                  text: leaf.text,
-                  bold: leaf.bold,
-                  italics: leaf.italic,
-                  underline: leaf.underline,
-                  strike: leaf.strikethrough,
-                  color: leaf.color,
-                  shading: leaf.bgColor
-                    ? {
-                        type: "clear",
-                        fill: leaf.bgColor.replace("#", ""),
-                      }
-                    : undefined,
-                  size: sizeMap[leaf.fontSize],
-                  font: fontFamilyMap[leaf.fontFamily],
-                  subScript: leaf.subscript,
-                  superScript: leaf.superscript,
-                })
-            ),
+            children: node.children.map(createTextRun),
           });
       }
     });
@@ -444,7 +283,10 @@ const BasicEditor = () => {
     <Slate
       editor={editor}
       value={value}
-      onChange={(newValue) => setValue(newValue)}
+      onChange={(newValue) => {
+        setValue(newValue)
+        console.log(value)
+      } }
     >
       <div className="App">
         <Toolbar />
@@ -452,7 +294,7 @@ const BasicEditor = () => {
           <Editable
             renderElement={renderElement}
             renderLeaf={renderLeaf}
-            placeholder="Enter paragraph "
+            placeholder="Enter paragraph"
           />
         </div>
         <button className="t" onClick={handleExport}>
@@ -473,5 +315,6 @@ const initialDocument = [
     ],
   },
 ];
+
 
 export default BasicEditor;
